@@ -19,13 +19,12 @@ Route::view('/', 'welcome');
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
-Route::get('/chirps', [ChirpController::class, "index"])
+Route::get('/chirps', [ChirpController::class, 'index'])
     ->middleware(['auth', 'verified'])
-    ->name('Chirp');
+    ->name('chirps');
 
 Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
-
 
 require __DIR__.'/auth.php';
