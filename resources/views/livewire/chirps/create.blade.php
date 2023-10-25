@@ -15,6 +15,8 @@ new class extends Component {
 
         $this->message = "";
 
+        $this->dispatch("chirp-created");
+
     }
     
 }; ?>
