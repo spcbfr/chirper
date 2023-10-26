@@ -60,9 +60,8 @@ new class extends Component {
                         <small
                             class="ml-2 text-sm text-gray-600">{{ $chirp->created_at->format('j M Y, g:i a') }}</small>
                         @unless ($chirp->created_at->eq($chirp->updated_at))
-                            <small class="text-sm text-gray-600"> &middot; {{ __('edited on') }}
-                                {{ $chirp->updated_at->format('j M Y, g:i a') }}`</small>
-                        @endunless
+                            <small class="text-sm text-gray-500"> &middot; {{ __('edited') }}
+                            @endunless
 
                     </div>
                     @if ($chirp->user->is(auth()->user()))
@@ -77,7 +76,6 @@ new class extends Component {
 
                                         <path
                                             d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
-
                                     </svg>
 
                                 </button>
