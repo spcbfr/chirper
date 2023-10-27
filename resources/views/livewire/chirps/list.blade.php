@@ -21,7 +21,7 @@ new class extends Component {
     {
         $this->editing = null;
         $this->chirps = Chirp::with('user')
-            ->latest()
+            ->orderBy('created_at', 'desc')
             ->get();
     }
 
@@ -35,11 +35,20 @@ new class extends Component {
     {
         $this->editing = $chirp;
     }
+
+    public function delete(Chirp $chirp): void
+    {
+        $this->authorize('delete', $chirp);
+
+        $chirp->delete();
+
+        $this->getChirps();
+    }
 }; ?>
 
 <div class="mt-6 bg-white shadow-sm rounded-lg divide-y">
-    @foreach ($chirps->sortByDesc('created_at') as $chirp)
-        <div wire:key='{{ $chirp->id }}' class="p-6 flex space-x-2">
+    @foreach ($chirps as $chirp)
+        <div wire:key='chirp-{{ $chirp->id }}' class="p-6 flex space-x-2">
 
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600 -scale-x-100" fill="none"
                 viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -50,60 +59,45 @@ new class extends Component {
             </svg>
 
             <div class="flex-1">
-
                 <div class="flex justify-between items-center">
-
                     <div>
-
                         <span class="text-gray-800">{{ $chirp->user->name }}</span>
-
                         <small
                             class="ml-2 text-sm text-gray-600">{{ $chirp->created_at->format('j M Y, g:i a') }}</small>
                         @unless ($chirp->created_at->eq($chirp->updated_at))
                             <small class="text-sm text-gray-500"> &middot; {{ __('edited') }}
                             @endunless
-
                     </div>
                     @if ($chirp->user->is(auth()->user()))
                         <x-dropdown>
-
                             <x-slot name="trigger">
-
                                 <button>
-
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400"
                                         viewBox="0 0 20 20" fill="currentColor">
-
                                         <path
                                             d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
                                     </svg>
-
                                 </button>
-
                             </x-slot>
 
                             <x-slot name="content">
 
                                 <x-dropdown-link wire:click="edit({{ $chirp }})">
-
                                     {{ __('Edit') }}
-
                                 </x-dropdown-link>
-
+                                <x-dropdown-link wire:click="delete({{ $chirp }})">
+                                    {{ __('Delete') }}
+                                </x-dropdown-link>
                             </x-slot>
-
                         </x-dropdown>
                     @endif
                 </div>
-
                 @if ($chirp->is($editing))
                     <livewire:chirps.edit :chirp="$chirp" />
                 @else
                     <p class="mt-4 text-lg text-gray-900">{{ $chirp->message }}</p>
                 @endif
-
             </div>
-
         </div>
     @endforeach
 
